@@ -1,0 +1,46 @@
+﻿@using HospitalManagement.Models.ViewModels
+@model AppointmentViewModel
+<br />
+<div class="container">        
+    <form asp-action="Payment">
+        <div class="card border-dark shadow-sm">
+            <div class="card-body">
+                <div class="container">
+                    <p class="my-5 display-1">Payment For Doctor</p>
+                    <hr style="border: 2px solid black">
+                    <div class="row">
+                        <ul class="list-unstyled">
+                            <span class="fs-5">Patient's Id: </span>
+                            <li class="text-black display-4">@Model.PatientId</li>
+                            <li class="text-muted mt-1 fs-4"><span class="text-black fs-5">Invoice No.</span> @Model.AppointmentId</li>
+                            <li class="text-black mt-1 fs-5"><span class="text-black fs-5">Date: </span>@Model.DateScheduled.ToShortDateString()</li>
+                        </ul>
+                        <hr>
+                        <div class="col-xl-10">
+                            <p class="fs-5">Appointment with Doctor &Aacute; <strong>Booking Charges</strong></p>
+                        </div>
+                        <div class="col-xl-2">
+                            <p class="float-end fs-5">
+                                $ 500
+                            </p>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="row text-black">
+                        <div class="col-xl-12">
+                            <p class="float-end fw-bold fs-2">
+                                Total: $ 500
+                            </p>
+                        </div>
+                        <hr style="border: 2px solid black">
+                    </div>
+                    <div class="container">
+                        <input type="submit" value="Pay Now" class="btn btn-primary" />
+                        <button asp-action="CreateForPatient" asp-controller="Appointment" asp-route-id="@Model.AppointmentId" value="Pay Now" class="btn btn-dark" >Cancel</button>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+

@@ -1,0 +1,84 @@
+﻿@using HospitalManagement.Models.ViewModels
+@model AppointmentViewModel
+<br />
+<div class="container">
+    <div class="text-center mt-5">
+        <h1 class="display-1">Book Appointment</h1>
+    </div>
+    <hr />
+    <form asp-action="CreateForPatient">
+        <div class="row">
+            <div>
+                <div class="card mt-2 mx-auto p-4 bg-light border-dark">
+                    <div class="card-body bg-light">
+                        <div class="container">                            
+                                <div class="controls">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="form_name">Firstname</label>
+                                                <input id="form_name" type="text" name="name" class="form-control" placeholder="Please enter your firstname *" required="required" data-error="Firstname is required.">
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="form_lastname">Lastname</label>
+                                                <input id="form_lastname" type="text" name="surname" class="form-control" placeholder="Please enter your lastname *" required="required" data-error="Lastname is required.">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="form_email">Doctor Name</label>
+                                                <select asp-for="DoctorId" class="form-control" asp-items="@Model.Doctors">
+                                                    <option value="">-- Select Doctor --</option>
+                                                </select>
+                                                <span asp-validation-for="DoctorId" class="text-danger"></span>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="form_email">Email</label>
+                                                <label asp-for="DateScheduled" class="control-label">Date Scheduled</label>
+                                                <input asp-for="DateScheduled" class="form-control" />
+                                                <span asp-validation-for="DateScheduled" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        @* <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="form_need">Please specify your need</label>
+                                                <select id="form_need" name="need" class="form-control" required="required" data-error="Please specify your need.">
+                                                    <option value="" selected disabled>--Select Your Issue--</option>
+                                                    <option>Request Invoice for order</option>
+                                                    <option>Request order status</option>
+                                                    <option>Haven't received cashback yet</option>
+                                                    <option>Other</option>
+                                                </select>
+
+                                            </div>
+                                        </div> *@
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="form_message">Message</label>
+                                                <textarea id="form_message" name="message" class="form-control" placeholder="Write your message here." rows="4" required="required" data-error="Please, leave us a message."></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="submit" value="Create" class="btn btn-primary" />
+                                            <a type="submit" value="Create" class="btn btn-dark" asp-action="Index" asp-controller="Appointment">Back</a>
+                                        </div>
+                                    </div>
+                                </div>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+

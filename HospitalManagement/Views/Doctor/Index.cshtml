@@ -1,0 +1,41 @@
+﻿@model List<Doctor>
+<div class="container">
+    <div class="container-fluid">
+        <div class="d-flex flex-row-cols-2">
+            <div class="col">
+                <h1 class="display-1">Doctors</h1>
+            </div>
+            <div class="flex-row-reverse mt-4">
+                <a class="btn btn-primary" asp-action="Create" asp-controller="Doctor">Add Doctor</a>
+            </div>
+        </div>
+        <hr />
+        <div class="row pb-5 mb-4">
+            @foreach (var doctor in Model)
+            {
+                <div class="col-lg-3 col-md-6 mb-5 mt-3 mb-lg-0">
+                    <div class="card shadow-sm border-0 rounded">
+                        <div class="card-body p-0">
+                            @if (doctor.DocImageUrl != null)
+                            {
+                                <img src="data:image;base64,@Convert.ToBase64String(doctor.DocImageUrl)" alt="Doctor Image" class="w-100 card-img-top" />
+                            }
+                            else
+                            {
+                                <span>No image available</span>
+                            }
+                            <div class="p-4">
+                                <h5 class="mb-0">@doctor.DoctorName</h5>
+                                <p class="small text-muted">@doctor.Specialization</p>
+                                <ul class="mb-0 list-inline mt-3">
+                                    <li class="list-inline-item m-0"><a asp-action="Edit" class="btn btn-light" asp-route-id="@doctor.DoctorId" asp-controller="Doctor"><i class="fa fa-facebook-f"></i>Update</a></li>
+                                    <li class="list-inline-item m-0"><a asp-action="Delete" class="btn btn-light" asp-route-id="@doctor.DoctorId" asp-controller="Doctor"><i class="fa fa-facebook-f"></i>Remove</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

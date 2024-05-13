@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Appointment>
+
+<h2 class="display-1">Appointments for You</h2>
+<hr/>
+@if (Model.Any())
+{
+    <table class="table table-striped table-bordered border-dark">
+        <thead>
+            <tr>
+                <th>Appointment ID</th>
+                <th>Patient Name</th>
+                <th>Appointment Date</th>
+                <th>Is Accepted</th>
+                <th>Payment Status</th>
+                <th>Amount Paid</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var appointment in Model)
+            {
+                <tr>
+                    <td>@appointment.AppointmentId</td>
+                    <td>@appointment.PatientId</td>
+                    <td>@appointment.DateScheduled</td>
+                    <td>@(appointment.IsAccepted ? "Yes" : "No")</td>
+                    <td>@(appointment.PaymentStatus ? "Paid" : "Not Paid")</td>
+                    <td>@appointment.AmountPaid</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@appointment.AppointmentId" class="btn btn-light">Edit</a> |
+                        <a asp-action="Delete" asp-route-id="@appointment.AppointmentId" class="btn btn-light">Close</a> |
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No appointments available.</p>
+}

@@ -1,0 +1,48 @@
+﻿@model List<Appointment>
+
+<div class="d-flex flex-row-cols-2">
+    <div class="col">
+        <h1 class="display-1">Appointments</h1>
+    </div>
+    <div class="flex-row-reverse mt-4">
+        @if (User.IsInRole("Patient"))
+        {
+            <a class="btn btn-primary" asp-action="Create" asp-controller="Appointment">Add Appointment</a>
+        }        
+    </div>
+</div>
+<hr />
+
+<table class="table table-bordered table-striped border-dark">
+    <thead>
+        <tr>
+            <th>Appointment ID</th>
+            <th>Patient ID</th>
+            <th>Doctor ID</th>
+            <th>Date Scheduled</th>
+            <th>Is Accepted</th>
+            <th>Payment Status</th>
+            <th>Amount Paid</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var appointment in Model)
+        {
+            <tr>
+                <td>@appointment.AppointmentId</td>
+                <td>@appointment.PatientId</td>
+                <td>@appointment.DoctorId</td>
+                <td>@appointment.DateScheduled</td>
+                <td>@(appointment.IsAccepted ? "Yes" : "No")</td>
+                <td>@(appointment.PaymentStatus ? "Paid" : "Not Paid")</td>
+                <td>@appointment.AmountPaid</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@appointment.AppointmentId" class="btn btn-light">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@appointment.AppointmentId" class="btn btn-light">Delete</a> |
+                    <a asp-action="Generate" asp-controller="Receipt" asp-route-appointmentId="@appointment.AppointmentId" class="btn btn-success">Generate Receipt</a> |
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,39 @@
+﻿@model IEnumerable<MedicalRecord>
+
+<div class="d-flex flex-row-cols-2">
+    <div class="col">
+        <h1 class="display-1">Medical Records</h1>
+    </div>
+    <div class="flex-row-reverse mt-4">
+        <a class="btn btn-primary" asp-action="Create" asp-controller="MedicalRecord">Add Medical Record</a>
+    </div>
+</div>
+<hr/>
+<table class="table table-bordered table-striped border-dark">
+    <thead>
+        <tr>
+            <th>Medical Record ID</th>
+            <th>Patient ID</th>
+            <th>Doctor ID</th>
+            <th>Diagnosis</th>
+            <th>Treatment</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var medicalRecord in Model)
+        {
+            <tr>
+                <td>@medicalRecord.RecordId</td>
+                <td>@medicalRecord.PatientId</td>
+                <td>@medicalRecord.DoctorId</td>
+                <td>@medicalRecord.Diagnosis</td>
+                <td>@medicalRecord.Treatment</td>
+                <td>                    
+                    <a asp-action="Edit" class="btn btn-light" asp-route-id="@medicalRecord.RecordId">Edit</a> |
+                    <a asp-action="Delete" class="btn btn-light" asp-route-id="@medicalRecord.RecordId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

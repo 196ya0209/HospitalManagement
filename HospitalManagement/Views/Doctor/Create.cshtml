@@ -1,0 +1,25 @@
+﻿@model Doctor
+
+<h2>Create Doctor</h2>
+
+<div class="container">
+    <form asp-action="Create" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="DoctorName" class="control-label">Doctor Name</label>
+            <input asp-for="DoctorName" class="form-control" />
+            <span asp-validation-for="DoctorName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Specialization" class="control-label"></label>
+            <input asp-for="Specialization" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="DocImageUrl" class="control-label">Doctor Image</label>
+            <input type="file" name="image" class="form-control" />
+        </div>
+        <br/>
+        <button type="submit" class="btn btn-primary">Create</button>
+        <a class="btn btn-dark" asp-action="Index" asp-controller="Doctor">Back</a>
+    </form>
+</div>

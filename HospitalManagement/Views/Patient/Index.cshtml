@@ -1,0 +1,68 @@
+﻿@model IEnumerable<Patient>
+<div class="container">
+    <div class="container-fluid">
+        <div class="d-flex flex-row-cols-2">
+            <div class="col">
+                <h1 class="display-1">Patients</h1>
+            </div>
+            <div class="flex-row-reverse mt-4">
+                <a class="btn btn-primary" asp-action="Create" asp-controller="Patient">Add Patient</a>
+            </div>
+        </div>
+        <hr />
+        <table class="table table-striped table-bordered border-dark rounded">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PatientName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gender)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AdmissionDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.WardNumber)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PatientAge)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.IsActive)
+                    </th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PatientName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Gender)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AdmissionDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.WardNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PatientAge)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IsActive)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" class="btn btn-light" asp-route-id="@item.PatientId">Edit</a> |                            
+                            <a asp-action="Delete" class="btn btn-light" asp-route-id="@item.PatientId">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

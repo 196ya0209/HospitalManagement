@@ -1,0 +1,43 @@
+﻿@using HospitalManagement.Models.ViewModels
+@model ReceiptViewModel
+<br/>
+<div class="card border-dark shadow-sm">
+    <div class="card-body mx-4">
+        <div class="container">
+            <p class="my-5 display-1" >Appointment Booked!</p>
+            <hr style="border: 2px solid black">
+            <div class="row">
+                <ul class="list-unstyled">
+                    <span class="fs-5">Patient's Name: </span>
+                    <li class="text-black display-4">@Model.PatientName</li>
+                    <li class="text-muted mt-1 fs-4"><span class="text-black fs-5">Invoice No.</span> @Model.AppointmentId</li>
+                    <li class="text-black mt-1 fs-5"><span class="text-black fs-5">Date: </span>@Model.AppointmentDate.ToShortDateString()</li>
+                </ul>                
+                <hr>                
+                <div class="col-xl-10">
+                    <p class="fs-5">Appointment with Doctor <strong>@Model.DoctorName</strong></p>
+                </div>
+                <div class="col-xl-2">
+                    <p class="float-end fs-5">
+                        $ @Model.AmountPaid
+                    </p>
+                </div>
+                <hr>
+            </div>                        
+            <div class="row text-black">
+                <div class="col-xl-12">
+                    <p class="float-end fw-bold fs-2">
+                        Total: $ @Model.AmountPaid
+                    </p>
+                </div>
+                <hr style="border: 2px solid black">
+            </div>
+            <div class="text-center" style="margin-top: 90px;">                
+                <p>Please bring your appointment card with you while visiting</p>
+            </div>            
+        </div>        
+    </div>    
+</div>
+<div class="text-center mt-4">
+<a class="btn btn-dark" asp-action="Index" asp-controller="Appointment">Back</a>
+</div>
