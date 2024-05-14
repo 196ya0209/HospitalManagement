@@ -37,6 +37,7 @@ namespace HospitalManagement.Controllers
             Appointment appointment = await _appointmentRepository.GetAppointmentByIdAsync(id);            
             return View(appointment);
         }
+        
         //Same Date Conflict
         private async Task<bool> IsAppointmentConflict(AppointmentViewModel viewModel)
         {
