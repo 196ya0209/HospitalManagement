@@ -172,7 +172,9 @@ namespace HospitalManagement.Areas.Identity.Pages.Account
                         await _userManager.AddToRoleAsync(user, Input.Role);
                         if (Input.Role == "Doctor")
                         {
-                            var doctor = new Doctor { DoctorUserId = user.Id, DoctorName = Input.DoctorName, Specialization=Input.Specialization };
+                            var doctor = new Doctor { DoctorUserId = user.Id, 
+                                DoctorName = Input.DoctorName, 
+                                Specialization=Input.Specialization };
                             await _doctorRepository.AddDoctorUser(doctor);
                         }
                         if (Input.Role == "Patient")

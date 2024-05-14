@@ -31,13 +31,18 @@ namespace HospitalManagement.Controllers
             _db = db;
             _httpContextAccessor = httpContextAccessor;
         }
+
+        public async Task<IActionResult> PaymentSuccess(int id)
+        {
+            Appointment appointment = await _appointmentRepository.GetAppointmentByIdAsync(id);            
+            return View(appointment);
+        }
+        //Same Date Conflict
         private async Task<bool> IsAppointmentConflict(AppointmentViewModel viewModel)
         {
-            // Example: Assume appointments cannot overlap if they are scheduled on the same date
             var existingAppointments = await _appointmentRepository.GetAllAppointmentsAsync(); // Get all existing appointments
             var newAppointmentDate = viewModel.DateScheduled.Date;
-
-            // Check if there is already an appointment scheduled on the same date
+            
             foreach (var existingAppointment in existingAppointments)
             {
                 if (existingAppointment.DateScheduled.Date == newAppointmentDate)
@@ -45,9 +50,7 @@ namespace HospitalManagement.Controllers
                     Log.Error("Conflict in Date with Doctor and Patient" + newAppointmentDate);
                     throw new AppointmentConflictException();
                 }
-            }
-
-            // No conflict detected
+            }            
             return false;
         }
 
@@ -177,13 +180,13 @@ namespace HospitalManagement.Controllers
 
                     await _appointmentRepository.UpdateAppointmentAsync(appointment);
 
-                    return ViewComponent("BookAppointment", appointment); // Redirect to appropriate page after updating
+                    return RedirectToAction("PaymentSuccess","Appointment", new { id = appointment.AppointmentId }); 
                 }
                 catch (Exception ex)
                 {
                     // Log error
                     Log.Error(ex.Message);
-                    return RedirectToAction("Index", "Home"); // Redirect to appropriate page after error
+                    return RedirectToAction("Index", "Home");
                 }
             }
 
@@ -221,11 +224,11 @@ namespace HospitalManagement.Controllers
             {
                 try
                 {
-                    bool isConflict = await IsAppointmentConflict(viewModel);
-                    if (isConflict)
-                    {
-                        return RedirectToAction("Index", "Appointment");
-                    }
+                    //bool isConflict = await IsAppointmentConflict(viewModel);
+                    //if (isConflict)
+                    //{
+                    //    return RedirectToAction("Index", "Appointment");
+                    //}
                     var appointment = new Appointment
                     {
                         PatientId = viewModel.PatientId,
@@ -309,11 +312,11 @@ namespace HospitalManagement.Controllers
             {
                 try
                 {
-                    bool isConflict = await IsAppointmentConflict(viewModel);
-                    if (isConflict)
-                    {
-                        return RedirectToAction("Index", "Appointment");
-                    }
+                    //bool isConflict = await IsAppointmentConflict(viewModel);
+                    //if (isConflict)
+                    //{
+                    //    return RedirectToAction("Index", "Appointment");
+                    //}
                     var appointment = new Appointment
                     {
                         AppointmentId = viewModel.AppointmentId,
@@ -449,6 +452,35 @@ namespace HospitalManagement.Controllers
                 await _appointmentRepository.DeleteAppointmentAsync(id);
                 Log.Information("Appointment deleted successfully.");
                 return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error occurred while deleting an appointment");
+                throw;
+            }
+        }
+
+        [Authorize(Roles = "Doctor, Patient")]
+        public async Task<IActionResult> DeleteForDoctor(int id)
+        {
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(id);
+            if (appointment == null)
+            {
+                return NotFound();
+            }
+            return View(appointment);
+        }
+
+        [Authorize(Roles = "Doctor, Patient")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteForDoctorConfirmed(int id)
+        {
+            try
+            {
+                await _appointmentRepository.DeleteAppointmentAsync(id);
+                Log.Information("Appointment deleted successfully.");
+                return RedirectToAction(nameof(AppointmentForDoctor));
             }
             catch (Exception ex)
             {
