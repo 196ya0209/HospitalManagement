@@ -2,6 +2,7 @@
 using HospitalManagement.Models;
 using HospitalManagement.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace HospitalManagement.Repository
 {
@@ -25,7 +26,7 @@ namespace HospitalManagement.Repository
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while adding an appointment");
+                Log.Error(ex, "Error occurred while adding an appointment");
                 throw;
             }
         }
@@ -43,7 +44,7 @@ namespace HospitalManagement.Repository
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while deleting an appointment");
+                Log.Error(ex, "Error occurred while deleting an appointment");
                 throw;
             }
         }
@@ -91,7 +92,7 @@ namespace HospitalManagement.Repository
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while updating an appointment");
+                Log.Error(ex, "Error occurred while updating an appointment");
                 throw;
             }
         }

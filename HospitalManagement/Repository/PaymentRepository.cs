@@ -2,6 +2,7 @@
 using HospitalManagement.Models;
 using HospitalManagement.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace HospitalManagement.Repository
 {
@@ -25,7 +26,7 @@ namespace HospitalManagement.Repository
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while adding a payment");
+                Log.Error(ex, "Error occurred while adding a payment");
                 throw;
             }
         }
@@ -64,7 +65,7 @@ namespace HospitalManagement.Repository
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while updating a payment");
+                Log.Error(ex, "Error occurred while updating a payment");
                 throw;
             }
         }

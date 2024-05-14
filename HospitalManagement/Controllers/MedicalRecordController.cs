@@ -5,6 +5,7 @@ using HospitalManagement.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Serilog;
 
 namespace HospitalManagement.Controllers
 {
@@ -29,12 +30,12 @@ namespace HospitalManagement.Controllers
             {
                 var medicalRecords = await _medicalRecordRepository.GetAllMedicalRecordsAsync();
 
-                _logger.LogInformation("Retrieved all medical records successfully.");
+                Log.Information("Retrieved all medical records successfully.");
                 return View(medicalRecords);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while retrieving medical records.");
+                Log.Error(ex, "Error occurred while retrieving medical records.");
                 throw;
             }
         }
@@ -53,12 +54,12 @@ namespace HospitalManagement.Controllers
                 {
                     return NotFound();
                 }
-                _logger.LogInformation("Retrieved details of medical record with ID: {MedicalRecordId}.", id);
+                Log.Information("Retrieved details of medical record with ID: {MedicalRecordId}.", id);
                 return View(medicalRecord);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while retrieving details of medical record with ID: {MedicalRecordId}.", id);
+                Log.Error(ex, "Error occurred while retrieving details of medical record with ID: {MedicalRecordId}.", id);
                 throw;
             }
         }
@@ -76,12 +77,12 @@ namespace HospitalManagement.Controllers
                     Doctors = doctors.Select(d => new SelectListItem { Value = d.DoctorId.ToString(), Text = d.DoctorName })
                 };
 
-                _logger.LogInformation("Fetched patients and doctors for creating a new medical record.");
+                Log.Information("Fetched patients and doctors for creating a new medical record.");
                 return View(viewModel);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while fetching patients and doctors for creating a new medical record.");
+                Log.Error(ex, "Error occurred while fetching patients and doctors for creating a new medical record.");
                 throw;
             }
         }
@@ -107,13 +108,13 @@ namespace HospitalManagement.Controllers
                     };
 
                     await _medicalRecordRepository.AddMedicalRecordAsync(medicalRecord);
-                    _logger.LogInformation("Medical record created successfully.");
+                    Log.Information("Medical record created successfully.");
 
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error occurred while creating a new medical record.");
+                    Log.Error(ex, "Error occurred while creating a new medical record.");
                     throw;
                 }
             }            
@@ -153,12 +154,12 @@ namespace HospitalManagement.Controllers
                 viewModel.Patients = patients.Select(p => new SelectListItem { Value = p.PatientId.ToString(), Text = p.PatientName });
                 viewModel.Doctors = doctors.Select(d => new SelectListItem { Value = d.DoctorId.ToString(), Text = d.DoctorName });
 
-                _logger.LogInformation("Retrieved medical record details for editing.");
+                Log.Information("Retrieved medical record details for editing.");
                 return View(viewModel);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while retrieving medical record details for editing.");
+                Log.Error(ex, "Error occurred while retrieving medical record details for editing.");
                 throw;
             }
         }
@@ -190,13 +191,13 @@ namespace HospitalManagement.Controllers
                     };
 
                     await _medicalRecordRepository.UpdateMedicalRecordAsync(medicalRecord);
-                    _logger.LogInformation("Medical record details updated successfully.");
+                    Log.Information("Medical record details updated successfully.");
 
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error occurred while updating medical record details.");
+                    Log.Error(ex, "Error occurred while updating medical record details.");
                     throw;
                 }
             }
@@ -219,12 +220,12 @@ namespace HospitalManagement.Controllers
                 {
                     return NotFound();
                 }
-                _logger.LogInformation("Retrieved details of medical record with ID: {MedicalRecordId} for deletion.", id);
+                Log.Information("Retrieved details of medical record with ID: {MedicalRecordId} for deletion.", id);
                 return View(medicalRecord);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while retrieving details of medical record with ID: {MedicalRecordId} for deletion.", id);
+                Log.Error(ex, "Error occurred while retrieving details of medical record with ID: {MedicalRecordId} for deletion.", id);
                 throw;
             }
         }
@@ -236,12 +237,12 @@ namespace HospitalManagement.Controllers
             try
             {
                 await _medicalRecordRepository.DeleteMedicalRecordAsync(id);
-                _logger.LogInformation("Medical record deleted successfully. Medical Record ID: {MedicalRecordId}", id);
+                Log.Information("Medical record deleted successfully. Medical Record ID: {MedicalRecordId}", id);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while deleting medical record. Medical Record ID: {MedicalRecordId}", id);
+                Log.Error(ex, "Error occurred while deleting medical record. Medical Record ID: {MedicalRecordId}", id);
                 throw;
             }
         }
@@ -251,12 +252,12 @@ namespace HospitalManagement.Controllers
             try
             {
                 var medicalRecords = await _medicalRecordRepository.GetMedicalRecordsForPatientAsync(patientId);
-                _logger.LogInformation("Retrieved all medical records for patient with ID: {PatientId} successfully.");
+                Log.Information("Retrieved all medical records for patient with ID: {PatientId} successfully.");
                 return View("Index", medicalRecords); // Assuming you have an Index view for medical records
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while retrieving medical records for patient with ID: {PatientId}.", patientId);
+                Log.Error(ex, "Error occurred while retrieving medical records for patient with ID: {PatientId}.", patientId);
                 throw;
             }
         }
@@ -266,12 +267,12 @@ namespace HospitalManagement.Controllers
             try
             {
                 var medicalRecords = await _medicalRecordRepository.GetMedicalRecordsForDoctorAsync(doctorId);
-                _logger.LogInformation("Retrieved all medical records for doctor with ID: {DoctorId} successfully.");
+                Log.Information("Retrieved all medical records for doctor with ID: {DoctorId} successfully.");
                 return View("Index", medicalRecords); // Assuming you have an Index view for medical records
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while retrieving medical records for doctor with ID: {DoctorId}.", doctorId);
+                Log.Error(ex, "Error occurred while retrieving medical records for doctor with ID: {DoctorId}.", doctorId);
                 throw;
             }
         }

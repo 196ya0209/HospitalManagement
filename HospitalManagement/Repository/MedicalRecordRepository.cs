@@ -2,6 +2,7 @@
 using HospitalManagement.Models;
 using HospitalManagement.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace HospitalManagement.Repository
 {
@@ -24,7 +25,7 @@ namespace HospitalManagement.Repository
             }
             catch (Exception ex) 
             {
-                _logger.LogError(ex, "Error in AddMedicalRecordAsync");
+                Log.Error(ex, "Error in AddMedicalRecordAsync");
             }            
         }
 
@@ -41,7 +42,7 @@ namespace HospitalManagement.Repository
             }
             catch(Exception ex)
             {
-                _logger.LogError(ex, "Error in DeleteMedicalRecordAsync");
+                Log.Error(ex, "Error in DeleteMedicalRecordAsync");
             }                        
         }
 
@@ -74,7 +75,7 @@ namespace HospitalManagement.Repository
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in UpdateMedicalRecordAsync");
+                Log.Error(ex, "Error in UpdateMedicalRecordAsync");
             }            
         }
     }

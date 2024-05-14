@@ -2,6 +2,7 @@
 using HospitalManagement.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace HospitalManagement.Controllers
 {
@@ -22,12 +23,12 @@ namespace HospitalManagement.Controllers
             try
             {
                 var patient = await _patientRepository.GetAll();
-                _logger.LogInformation("Retrieved all patients successfully.");
+                Log.Information("Retrieved all patients successfully.");
                 return View(patient);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while retrieving patients.");
+                Log.Error(ex, "Error occurred while retrieving patients.");
                 throw;
             }
         }
@@ -46,12 +47,12 @@ namespace HospitalManagement.Controllers
                 {
                     return NotFound();
                 }
-                _logger.LogInformation("Retrieved details of patient with ID: {PatientId}.", id);
+                Log.Information("Retrieved details of patient with ID: {PatientId}.", id);
                 return View(doctor);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while retrieving details of patient with ID: {PatientId}.", id);
+                Log.Error(ex, "Error occurred while retrieving details of patient with ID: {PatientId}.", id);
                 throw;
             }
         }
@@ -71,12 +72,12 @@ namespace HospitalManagement.Controllers
                 try
                 {
                     await _patientRepository.AddPatient(patient);
-                    _logger.LogInformation("Patient created successfully. Patient ID: {PatientId}", patient.PatientId);
+                    Log.Information("Patient created successfully. Patient ID: {PatientId}", patient.PatientId);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error occurred while creating a doctor.");
+                    Log.Error(ex, "Error occurred while creating a doctor.");
                     throw;
                 }
             }
@@ -97,12 +98,12 @@ namespace HospitalManagement.Controllers
                 {
                     return NotFound();
                 }
-                _logger.LogInformation("Retrieved details of patient with ID: {PatientId} for editing.", id);
+                Log.Information("Retrieved details of patient with ID: {PatientId} for editing.", id);
                 return View(patient);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while retrieving details of patient with ID: {PatientId} for editing.", id);
+                Log.Error(ex, "Error occurred while retrieving details of patient with ID: {PatientId} for editing.", id);
                 throw;
             }
         }
@@ -122,12 +123,12 @@ namespace HospitalManagement.Controllers
                 try
                 {
                     await _patientRepository.UpdatePatient(patient);
-                    _logger.LogInformation("Patient details updated successfully. Doctor ID: {PatientId}", patient.PatientId);
+                    Log.Information("Patient details updated successfully. Doctor ID: {PatientId}", patient.PatientId);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error occurred while updating doctor details. Doctor ID: {DoctorId}", patient.PatientId);
+                    Log.Error(ex, "Error occurred while updating doctor details. Doctor ID: {DoctorId}", patient.PatientId);
                     throw;
                 }
             }
@@ -148,12 +149,12 @@ namespace HospitalManagement.Controllers
                 {
                     return NotFound();
                 }
-                _logger.LogInformation("Retrieved details of Patient with ID: {PatientId} for deletion.", id);
+                Log.Information("Retrieved details of Patient with ID: {PatientId} for deletion.", id);
                 return View(doctor);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while retrieving details of Patient with ID: {PatientId} for deletion.", id);
+                Log.Error(ex, "Error occurred while retrieving details of Patient with ID: {PatientId} for deletion.", id);
                 throw;
             }
         }
@@ -165,12 +166,12 @@ namespace HospitalManagement.Controllers
             try
             {
                 await _patientRepository.RemovePatient(id);
-                _logger.LogInformation("Patient deleted successfully. Patient ID: {PatientId}", id);
+                Log.Information("Patient deleted successfully. Patient ID: {PatientId}", id);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while deleting Patient. Patient ID: {PatientId}", id);
+                Log.Error(ex, "Error occurred while deleting Patient. Patient ID: {PatientId}", id);
                 throw;
             }
         }

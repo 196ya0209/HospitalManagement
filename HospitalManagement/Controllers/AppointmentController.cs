@@ -1,4 +1,5 @@
-﻿using HospitalManagement.Data;
+﻿using HospitalManagement.CustomExceptions;
+using HospitalManagement.Data;
 using HospitalManagement.Models;
 using HospitalManagement.Models.ViewModels;
 using HospitalManagement.Repository.IRepository;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System.Security.Claims;
 
 namespace HospitalManagement.Controllers
@@ -28,7 +30,33 @@ namespace HospitalManagement.Controllers
             _doctorRepository = doctorRepository;
             _db = db;
             _httpContextAccessor = httpContextAccessor;
-        }        
+        }
+        private async Task<bool> IsAppointmentConflict(AppointmentViewModel viewModel)
+        {
+            // Example: Assume appointments cannot overlap if they are scheduled on the same date
+            var existingAppointments = await _appointmentRepository.GetAllAppointmentsAsync(); // Get all existing appointments
+            var newAppointmentDate = viewModel.DateScheduled.Date;
+
+            // Check if there is already an appointment scheduled on the same date
+            foreach (var existingAppointment in existingAppointments)
+            {
+                if (existingAppointment.DateScheduled.Date == newAppointmentDate)
+                {
+                    Log.Error("Conflict in Date with Doctor and Patient" + newAppointmentDate);
+                    throw new AppointmentConflictException();
+                }
+            }
+
+            // No conflict detected
+            return false;
+        }
+
+        public async Task<IActionResult> BookAppointment(int id)
+        {            
+            var appointment = await _appointmentRepository.GetAppointmentByIdAsync(id);
+            return View(appointment);
+        }
+
         [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> AppointmentForDoctor()
         {           
@@ -69,6 +97,11 @@ namespace HospitalManagement.Controllers
             {
                 try
                 {
+                    //bool isConflict = await IsAppointmentConflict(viewModel);
+                    //if (isConflict)
+                    //{
+                        //return RedirectToAction("Index", "Appointment");
+                    //}
                     string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
                     var patient = await _db.Patients.FirstOrDefaultAsync(d => d.PatientUserId == userId)!;
                     var appointment = new Appointment
@@ -83,13 +116,13 @@ namespace HospitalManagement.Controllers
 
                     await _appointmentRepository.AddAppointmentAsync(appointment);
 
-                    _logger.LogInformation("Appointment created successfully.");
+                    Log.Information("Appointment created successfully.");
 
                     return RedirectToAction("Payment", "Appointment", new { id = appointment.AppointmentId });
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error occurred while creating a new appointment.");
+                    Log.Error(ex, "Error occurred while creating a new appointment.");
                     throw;
                 }
             }
@@ -126,11 +159,7 @@ namespace HospitalManagement.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Payment(int id, AppointmentViewModel viewModel)
-        {
-            //if (id != viewModel.AppointmentId)
-            //{
-            //    return NotFound();
-            //}
+        {            
             ModelState.Remove("Patients");
             ModelState.Remove("Doctors");
             if (ModelState.IsValid)
@@ -148,11 +177,12 @@ namespace HospitalManagement.Controllers
 
                     await _appointmentRepository.UpdateAppointmentAsync(appointment);
 
-                    return RedirectToAction("Index", "Home"); // Redirect to appropriate page after updating
+                    return ViewComponent("BookAppointment", appointment); // Redirect to appropriate page after updating
                 }
                 catch (Exception ex)
                 {
                     // Log error
+                    Log.Error(ex.Message);
                     return RedirectToAction("Index", "Home"); // Redirect to appropriate page after error
                 }
             }
@@ -191,6 +221,11 @@ namespace HospitalManagement.Controllers
             {
                 try
                 {
+                    bool isConflict = await IsAppointmentConflict(viewModel);
+                    if (isConflict)
+                    {
+                        return RedirectToAction("Index", "Appointment");
+                    }
                     var appointment = new Appointment
                     {
                         PatientId = viewModel.PatientId,
@@ -202,13 +237,13 @@ namespace HospitalManagement.Controllers
                     };
 
                     await _appointmentRepository.AddAppointmentAsync(appointment);
-                    _logger.LogInformation("Appointment created successfully.");
+                    Log.Information("Appointment created successfully.");
 
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error occurred while creating a new appointment.");
+                    Log.Error(ex, "Error occurred while creating a new appointment.");
                     throw;
                 }
             }
@@ -248,12 +283,12 @@ namespace HospitalManagement.Controllers
                     Doctors = (await _doctorRepository.GetAll()).Select(d => new SelectListItem { Value = d.DoctorId.ToString(), Text = d.DoctorName })
                 };
 
-                _logger.LogInformation("Retrieved appointment details for editing.");
+                Log.Information("Retrieved appointment details for editing.");
                 return View(viewModel);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while retrieving appointment details for editing.");
+                Log.Error(ex, "Error occurred while retrieving appointment details for editing.");
                 throw;
             }
         }
@@ -274,6 +309,11 @@ namespace HospitalManagement.Controllers
             {
                 try
                 {
+                    bool isConflict = await IsAppointmentConflict(viewModel);
+                    if (isConflict)
+                    {
+                        return RedirectToAction("Index", "Appointment");
+                    }
                     var appointment = new Appointment
                     {
                         AppointmentId = viewModel.AppointmentId,
@@ -286,13 +326,13 @@ namespace HospitalManagement.Controllers
                     };
 
                     await _appointmentRepository.UpdateAppointmentAsync(appointment);
-                    _logger.LogInformation("Appointment details updated successfully.");
+                    Log.Information("Appointment details updated successfully.");
 
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error occurred while updating appointment details.");
+                    Log.Error(ex, "Error occurred while updating appointment details.");
                     throw;
                 }
             }
@@ -333,12 +373,12 @@ namespace HospitalManagement.Controllers
                     Doctors = (await _doctorRepository.GetAll()).Select(d => new SelectListItem { Value = d.DoctorId.ToString(), Text = d.DoctorName })
                 };
 
-                _logger.LogInformation("Retrieved appointment details for editing.");
+                Log.Information("Retrieved appointment details for editing.");
                 return View(viewModel);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while retrieving appointment details for editing.");
+                Log.Error(ex, "Error occurred while retrieving appointment details for editing.");
                 throw;
             }
         }
@@ -371,13 +411,13 @@ namespace HospitalManagement.Controllers
                     };
 
                     await _appointmentRepository.UpdateAppointmentAsync(appointment);
-                    _logger.LogInformation("Appointment details updated successfully.");
+                    Log.Information("Appointment details updated successfully.");
 
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error occurred while updating appointment details.");
+                    Log.Error(ex, "Error occurred while updating appointment details.");
                     throw;
                 }
             }
@@ -407,12 +447,12 @@ namespace HospitalManagement.Controllers
             try
             {
                 await _appointmentRepository.DeleteAppointmentAsync(id);
-                _logger.LogInformation("Appointment deleted successfully.");
+                Log.Information("Appointment deleted successfully.");
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while deleting an appointment");
+                Log.Error(ex, "Error occurred while deleting an appointment");
                 throw;
             }
         }

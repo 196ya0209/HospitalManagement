@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace HospitalManagement.Areas.Identity.Pages.Account
 {
@@ -165,7 +166,7 @@ namespace HospitalManagement.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                    Log.Information("User created a new account with password.");
                     if (!string.IsNullOrEmpty(Input.Role))
                     {                        
                         await _userManager.AddToRoleAsync(user, Input.Role);

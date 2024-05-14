@@ -4,6 +4,9 @@ using HospitalManagement.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using HospitalManagement.Utility;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using HospitalManagement.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +38,12 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy(HospitalRoles.Doctor, policy => policy.RequireRole(HospitalRoles.Doctor));
     options.AddPolicy(HospitalRoles.Patient, policy => policy.RequireRole(HospitalRoles.Patient));
 });
+//Logging
+Log.Logger = new LoggerConfiguration().
+    MinimumLevel.Debug().
+    WriteTo.Console().WriteTo.
+    File("Logs\\log.txt", rollingInterval: RollingInterval.Day).CreateLogger();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -43,6 +52,11 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+}
+else
+{
+    //Custom Middleware for Custom Exception
+    app.UseMyExceptionMiddleware();
 }
 
 app.UseHttpsRedirection();

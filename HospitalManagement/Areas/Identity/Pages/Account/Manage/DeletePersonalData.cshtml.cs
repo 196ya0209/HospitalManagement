@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace HospitalManagement.Areas.Identity.Pages.Account.Manage
 {
@@ -95,7 +96,7 @@ namespace HospitalManagement.Areas.Identity.Pages.Account.Manage
 
             await _signInManager.SignOutAsync();
 
-            _logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);
+            Log.Information("User with ID '{UserId}' deleted themselves.", userId);
 
             return Redirect("~/");
         }

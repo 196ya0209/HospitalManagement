@@ -2,6 +2,7 @@
 using HospitalManagement.Models;
 using HospitalManagement.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System.Numerics;
 
 namespace HospitalManagement.Repository
@@ -20,14 +21,14 @@ namespace HospitalManagement.Repository
         {
             await _db.Patients.AddAsync(patient);
             await _db.SaveChangesAsync();
-            _logger.LogInformation("Patient added successfully");
+            Log.Information("Patient added successfully");
         }
 
         public async Task AddPatientUser(Patient patient)
         {
             await _db.Patients.AddAsync(patient);
             await _db.SaveChangesAsync();
-            _logger.LogInformation("Patient added successfully");
+            Log.Information("Patient added successfully");
         }
 
         public async Task<List<Patient>> GetAll()
@@ -41,10 +42,10 @@ namespace HospitalManagement.Repository
             var patient = await _db.Patients.FirstOrDefaultAsync(x => x.PatientId == patientId); 
             if(patient != null)
             {
-                _logger.LogInformation("Patient found -> " + patientId);
+                Log.Information("Patient found -> " + patientId);
                 return patient;
             }
-            _logger.LogError("Patient Not found -> " + patientId);
+            Log.Error("Patient Not found -> " + patientId);
             return null;
         }
 
@@ -54,11 +55,11 @@ namespace HospitalManagement.Repository
             if (patient != null)
             {
                 _db.Patients.Remove(patient);
-                _logger.LogInformation("Patient Removed Successfully -> " + patient.PatientName);
+                Log.Information("Patient Removed Successfully -> " + patient.PatientName);
                 await _db.SaveChangesAsync();                
                 return true;
             }
-            _logger.LogError("Patient Not found -> " + patientId);
+            Log.Error("Patient Not found -> " + patientId);
             return false;
         }
 
@@ -68,7 +69,7 @@ namespace HospitalManagement.Repository
             {
                 _db.Patients.Update(patient);
                 await _db.SaveChangesAsync();
-                _logger.LogInformation("Patient updated Successfully -> " + patient.PatientName);
+                Log.Information("Patient updated Successfully -> " + patient.PatientName);
             }
         }
     }

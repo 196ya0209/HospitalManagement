@@ -2,6 +2,7 @@
 using HospitalManagement.Models;
 using HospitalManagement.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace HospitalManagement.Repository
 {
@@ -19,14 +20,14 @@ namespace HospitalManagement.Repository
         {
             await _db.Doctors.AddAsync(doctor);
             await _db.SaveChangesAsync();
-            _logger.LogInformation("Doctor added successfully");
+            Log.Information("Doctor added successfully");
         }
 
         public async Task AddDoctorUser(Doctor doctor)
         {
             await _db.Doctors.AddAsync(doctor);
             await _db.SaveChangesAsync();
-            _logger.LogInformation("Doctor added successfully");
+            Log.Information("Doctor added successfully");
         }
 
         public async Task<List<Doctor>> GetAll()
@@ -40,10 +41,10 @@ namespace HospitalManagement.Repository
             var doctor = await _db.Doctors.FirstOrDefaultAsync(x => x.DoctorId == doctorId); 
             if(doctor != null)
             {
-                _logger.LogInformation("Doctor found -> " + doctorId);
+                Log.Information("Doctor found -> " + doctorId);
                 return doctor;
             }
-            _logger.LogError("Doctor Not found -> " + doctorId);
+            Log.Error("Doctor Not found -> " + doctorId);
             return null;
         }
 
@@ -53,11 +54,11 @@ namespace HospitalManagement.Repository
             if (doctor != null)
             {
                 _db.Doctors.Remove(doctor);
-                _logger.LogInformation("Doctor Removed Successfully -> " + doctor.DoctorName);
+                Log.Information("Doctor Removed Successfully -> " + doctor.DoctorName);
                 await _db.SaveChangesAsync();                
                 return true;
             }
-            _logger.LogError("Doctor Not found -> " + doctorId);
+            Log.Error("Doctor Not found -> " + doctorId);
             return false;
         }
 
@@ -68,7 +69,7 @@ namespace HospitalManagement.Repository
                 
                 _db.Doctors.Update(doctor);
                 await _db.SaveChangesAsync();
-                _logger.LogInformation("Doctor updated Successfully -> " + doctor.DoctorName);
+                Log.Information("Doctor updated Successfully -> " + doctor.DoctorName);
             }
         }
     }
